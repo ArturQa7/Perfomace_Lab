@@ -1,0 +1,96 @@
+#Задание 1
+
+n = int(input("Введите число n: "))
+m = int(input("Введите длину интервала m: "))
+
+def task_1(n,m):
+    yield 1
+    for i in range(m-1, n*m, m-1):
+        v = i % n + 1
+
+        if v == 1: return
+        yield v
+
+print(list(task_1(n,m)))
+
+
+
+#Задание 2
+
+import math
+
+coor_1 = r'C:\Users\Артур\PycharmProjects\API_test\coor_1'
+coor_2 = r'C:\Users\Артур\PycharmProjects\API_test\coor_2'
+
+# считываем координаты центра окружности и ее радиус из файла1
+with open(coor_1, 'r') as file:
+    x_center, y_center, radius = map(float, file.readline().split())
+
+# считываем координаты точек из файла2
+with open(coor_2, 'r') as file:
+    for line in file:
+        x, y = map(float, line.split())
+
+        # вычисляем расстояние от точки до центра окружности
+        distance = math.sqrt((x - x_center)**2 + (y - y_center)**2)
+
+        # сравниваем расстояние с радиусом окружности
+        if distance == radius:
+            print(0)
+        elif distance < radius:
+            print(1)
+        else:
+            print(2)
+
+
+
+# #Задание 3
+
+
+import json
+
+
+def get_values_by_id(id, values):
+    for v in values:
+        if v["id"] == id:
+            return v["value"]
+    return None
+
+def fill_test_values(test, values):
+    test_value = get_values_by_id(test["id"], values)
+    if test_value is not None:
+        test["value"] = test_value
+    if "values" in test:
+        for v in test["values"]:
+            fill_test_values(v, values)
+
+
+with open("tests.json", "r") as f:
+    tests_json = json.load(f)
+
+with open("values.json", "r") as f:
+    values_json = json.load(f)
+
+for test in tests_json["tests"]:
+    fill_test_values(test, values_json["values"])
+
+with open("report.json", "w") as f:
+    json.dump(tests_json, f, indent=2)
+
+
+
+# Задание 4
+
+pf1 = r'C:\Users\Артур\PycharmProjects\API_test\pf1'
+# считываем массив из файла
+with open(pf1, 'r') as file:
+    nums = list(map(int, file.read().split()))
+
+# находим среднее значение массива
+avg = sum(nums) // len(nums)
+
+# считаем количество ходов для приведения каждого элемента к среднему значению
+moves = sum(abs(num - avg) for num in nums)
+
+# выводим результат
+print(moves)
